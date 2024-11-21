@@ -16,6 +16,9 @@
 #include <sys/types.h>
 #include <stdint.h>
 #include <time.h>
+/* user add begin */
+//typedef long suseconds_t;
+/* user add end   */
 #ifdef _WIN32
 typedef __time64_t time_t;
 #endif /* _WIN32 */

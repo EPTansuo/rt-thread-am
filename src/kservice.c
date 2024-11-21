@@ -667,8 +667,10 @@ RTM_EXPORT(rt_strdup);
 /**
  * @brief This function will show the version of rt-thread rtos
  */
+#include <klib.h>
 void rt_show_version(void)
 {
+    printf("SHOW_VERSION\n");
     rt_kprintf("\n \\ | /\n");
 #ifdef RT_USING_SMART
     rt_kprintf("- RT -     Thread Smart Operating System\n");
@@ -1671,6 +1673,7 @@ rt_weak void rt_system_heap_init(void *begin_addr, void *end_addr)
  *
  * @return the pointer to allocated memory or NULL if no free memory was found.
  */
+#include <klib.h>
 rt_weak void *rt_malloc(rt_size_t size)
 {
     rt_base_t level;
@@ -1679,9 +1682,12 @@ rt_weak void *rt_malloc(rt_size_t size)
     /* Enter critical zone */
     level = _heap_lock();
     /* allocate memory block from system heap */
+    printf("_MEM_MALLOC...\n");
     ptr = _MEM_MALLOC(size);
     /* Exit critical zone */
+    printf("_heap_unlock...\n");
     _heap_unlock(level);
+
     /* call 'rt_malloc' hook */
     RT_OBJECT_HOOK_CALL(rt_malloc_hook, (ptr, size));
     return ptr;

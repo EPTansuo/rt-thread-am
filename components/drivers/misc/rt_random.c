@@ -10,6 +10,11 @@
 #include <string.h>
 #include <rtthread.h>
 
+
+/* user add begin */
+//typedef ssize_t                         rt_ssize_t; 
+/* user add end   */
+
 static struct rt_device random_dev;
 static unsigned long seed;
 

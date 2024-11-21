@@ -3,25 +3,31 @@
 #include <klib.h>
 #include <klib-macros.h>
 
+
 #define AM_APPS_HEAP_SIZE  0x2000000
 #define RT_HW_HEAP_BEGIN heap.start
 #define RT_HW_HEAP_END heap.end
+
+void outb_local(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
+
 
 Area am_apps_heap = {}, am_apps_data = {}, am_apps_bss = {};
 uint8_t * am_apps_data_content = NULL;
 
 void rt_hw_board_init() {
+  printf("rt_hw_uart_init....\n");
   int rt_hw_uart_init(void);
   rt_hw_uart_init();
 
 #ifdef RT_USING_HEAP
   /* initialize memory system */
+  printf("rt_system_heap_init....\n");
   rt_system_heap_init(RT_HW_HEAP_BEGIN, RT_HW_HEAP_END);
 #endif
 
   uint32_t size = AM_APPS_HEAP_SIZE;
   void *p = NULL;
-  for (; p == NULL && size != 0; size /= 2) { p = rt_malloc(size); }
+  for (; p == NULL && size != 0; size /= 2) {printf("rt_malloc....\n"); p = rt_malloc(size); outb_local(0xa00003f8,'^');printf("rt_malloc_finish....\n");}
   am_apps_heap = RANGE(p, p + size);
 
   extern char __am_apps_data_start, __am_apps_data_end;
@@ -53,6 +59,7 @@ void rt_hw_board_init() {
 }
 
 int main() {
+  printf("ioe_init...\n");
   ioe_init();
 #ifdef __ISA_NATIVE__
   // trigger the real initialization of IOE to
@@ -60,8 +67,10 @@ int main() {
   io_read(AM_TIMER_CONFIG);
 #endif
   extern void __am_cte_init();
+  printf("__am_cte_init...\n");
   __am_cte_init();
   extern int entry(void);
+  printf("entry...\n");
   entry();
   return 0;
 }

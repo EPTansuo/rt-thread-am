@@ -15,6 +15,11 @@
 #include <stddef.h>
 #include <sys/types.h>
 
+/* user add begin */
+//typedef unsigned long useconds_t;
+/* user add end   */
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
