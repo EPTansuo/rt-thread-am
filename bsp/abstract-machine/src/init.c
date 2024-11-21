@@ -25,7 +25,7 @@ void rt_hw_board_init() {
 
   uint32_t size = AM_APPS_HEAP_SIZE;
   void *p = NULL;
-  for (; p == NULL && size != 0; size /= 2) {p = rt_malloc(size); outb_local(0xa00003f8,'^');}
+  for (; p == NULL && size != 0; size /= 2) {p = rt_malloc(size);}
   am_apps_heap = RANGE(p, p + size);
 
   extern char __am_apps_data_start, __am_apps_data_end;

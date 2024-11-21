@@ -2,27 +2,24 @@
 #include <klib.h>
 #include <rtthread.h>
 
-static Context *ev_handler(Event e, Context *c)
+static rt_ubase_t from_g,to_g;
+
+static Context *ev_handler(Event ev, Context *c)
 {
-  switch (e.event)
+  switch (ev.event)
   {
-  case EVENT_YIELD:
-  {
-    rt_thread_t self = rt_thread_self();
-    rt_ubase_t *args = (void *)self->user_data;
-    Context **from = (Context **)args[0], **to = (Context **)args[1];
-    if (from != NULL)
-      *from = c;
-    c = *to;
-    break;
-  }
-  case EVENT_IRQ_TIMER:
-    break;
-  case EVENT_IRQ_IODEV:
-    break;
-  default:
-    printf("Unhandled event ID = %d\n", e.event);
-    assert(0);
+    case EVENT_YIELD:
+    {
+      Context **from = (Context **)from_g;
+      Context **to = (Context **)to_g;
+      if (from != NULL)
+        *from = c;
+      c = *to;
+      break;
+    }
+    default:
+      printf("Unhandled event: ID = %d\n", ev.event);
+      assert(0);
   }
   return c;
 }
@@ -34,13 +31,10 @@ void __am_cte_init()
 
 void rt_hw_context_switch(rt_ubase_t from, rt_ubase_t to)
 {
-  //assert(0);
-  rt_thread_t self= rt_thread_self();
-  rt_ubase_t prev_user_data = self->user_data;
-  rt_ubase_t user_data[2] = {from, to};
-  self->user_data = (rt_ubase_t)user_data;
+  from_g = from;
+  to_g = to;
   yield();
-  self->user_data = prev_user_data;
+
 }
 
 
@@ -68,14 +62,19 @@ static void tentry_entry(void *parameter) {
 // 参考：https://riscv-rtthread-programming-manual.readthedocs.io/zh-cn/latest/zh_CN/8.html
 rt_uint8_t *rt_hw_stack_init(void *tentry, void *parameter, rt_uint8_t *stack_addr, void *texit)
 {
-//  assert(0);
-//  return NULL;
-  stack_addr = (rt_uint8_t*)((rt_ubase_t)stack_addr & ~0xf);
-  uintptr_t *args = (void*)(stack_addr-32);
-  stack_addr-=32;
+  rt_uint8_t         *stk;
+
+  stk  = stack_addr + sizeof(rt_ubase_t);
+  stk  = (rt_uint8_t *)RT_ALIGN_DOWN((rt_ubase_t)stk, sizeof(rt_ubase_t));
+
+  uintptr_t *args = (void*)(stk-3*sizeof(uintptr_t));
+  stk -= 3*sizeof(uintptr_t);
+  
   args[0]=(uintptr_t)parameter;
   args[1]=(uintptr_t)tentry;
   args[2]=(uintptr_t)texit;
-  Context* c = kcontext((Area){0, stack_addr}, tentry_entry, args);
+  
+  Context* c = kcontext((Area){0, stk}, tentry_entry, args);
+
   return (rt_uint8_t*)c;
 }
