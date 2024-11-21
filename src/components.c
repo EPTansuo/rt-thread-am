@@ -235,19 +235,16 @@ void rt_application_init(void)
  *
  * @return Normally never returns. If 0 is returned, the scheduler failed.
  */
-#include <klib.h>
 int rtthread_startup(void)
-{   printf("rt_hw_interrupt_disable..\n");
+{   
     rt_hw_interrupt_disable();
 
     /* board level initialization
      * NOTE: please initialize heap inside board initialization.
      */
-    printf("rt_hw_board_init..\n");
     rt_hw_board_init();
 
     /* show RT-Thread version */
-    printf("show_version..\n");
     rt_show_version();
 
     /* timer system initialization */

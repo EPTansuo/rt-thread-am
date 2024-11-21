@@ -1673,7 +1673,6 @@ rt_weak void rt_system_heap_init(void *begin_addr, void *end_addr)
  *
  * @return the pointer to allocated memory or NULL if no free memory was found.
  */
-#include <klib.h>
 rt_weak void *rt_malloc(rt_size_t size)
 {
     rt_base_t level;
@@ -1682,10 +1681,8 @@ rt_weak void *rt_malloc(rt_size_t size)
     /* Enter critical zone */
     level = _heap_lock();
     /* allocate memory block from system heap */
-    printf("_MEM_MALLOC...\n");
     ptr = _MEM_MALLOC(size);
     /* Exit critical zone */
-    printf("_heap_unlock...\n");
     _heap_unlock(level);
 
     /* call 'rt_malloc' hook */

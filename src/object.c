@@ -559,18 +559,12 @@ void rt_object_delete(rt_object_t object)
  *
  * @return RT_TRUE if a system object, RT_FALSE for others.
  */
-#include <klib.h>
 rt_bool_t rt_object_is_systemobject(rt_object_t object)
 {
     /* object check */
     RT_ASSERT(object != RT_NULL);
-    printf("object != RT_NULL\n");
-    printf("object->type=0x%x\n",object->type);
-    printf("RT_Object_Class_Static=0x%x\n",RT_Object_Class_Static);
-    printf("xx & xx = %s\n", (object->type & RT_Object_Class_Static) ? "RT_TRUE" : "RT_FALSE");
     if (object->type & RT_Object_Class_Static)
         return RT_TRUE;
-    printf("return RT_FALSE\n");
     return RT_FALSE;
 }
 

@@ -275,7 +275,6 @@ RTM_EXPORT(rt_smem_detach);
  *
  * @return the pointer to allocated memory or NULL if no free memory was found.
  */
-#include <klib.h>
 void *rt_smem_alloc(rt_smem_t m, rt_size_t size)
 {
     rt_size_t ptr, ptr2;
@@ -284,13 +283,9 @@ void *rt_smem_alloc(rt_smem_t m, rt_size_t size)
 
     if (size == 0)
         return RT_NULL;
-    printf("size=%d\n",size);
     RT_ASSERT(m != RT_NULL);
-    printf("m != RT_NULL\n");
     RT_ASSERT(rt_object_get_type(&m->parent) == RT_Object_Class_Memory);
-    printf("rt_object_get_type\n");
     RT_ASSERT(rt_object_is_systemobject(&m->parent));
-    printf("rt_object_is_systemobject\n");
     if (size != RT_ALIGN(size, RT_ALIGN_SIZE))
     {
         RT_DEBUG_LOG(RT_DEBUG_MEM, ("malloc size %d, but align to %d\n",
