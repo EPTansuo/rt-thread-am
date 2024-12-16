@@ -8,7 +8,14 @@ NAME = rtthread
 SRCS = $(shell find src -name "*.c")
 CFLAGS += -DHAVE_CCONFIG_H -D__RTTHREAD__  #-I $(RTT_DIR)/components/libc/compilers/common/extension/
 CFLAGS += -Wno-nonnull-compare -g
+
+# 判断优化级别
+ifneq ($(ARCH),riscv32e-ysyxsoc)
 LDFLAGS += -T extra.ld
+endif
+
+
+
 -include $(FILE_MK)
 -include $(AM_APPS_MK)
 include $(AM_HOME)/Makefile
@@ -38,5 +45,5 @@ $(AM_APPS_MK): integrate-am-apps.py
 endif
 
 ITMP: 
-	gcc /home/han/Disk/Document/PROJECT/ysyx/rt-thread-am/components/libc/compilers/common/include/sys/time.h -E -o ~/tmp/time.i $(CFLAGS)
+	gcc /home/han/Disk/Document/PROJECT/ysyx/ysyx-workbench/rt-thread-am/components/libc/compilers/common/include/sys/time.h -E -o ~/tmp/time.i $(CFLAGS)
 .PHONY: init menuconfig update
