@@ -9,7 +9,6 @@ SRCS = $(shell find src -name "*.c")
 CFLAGS += -DHAVE_CCONFIG_H -D__RTTHREAD__  #-I $(RTT_DIR)/components/libc/compilers/common/extension/
 CFLAGS += -Wno-nonnull-compare -g
 
-# 判断优化级别
 ifneq ($(ARCH),riscv32e-ysyxsoc)
 LDFLAGS += -T extra.ld
 endif
