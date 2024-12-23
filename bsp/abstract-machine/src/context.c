@@ -8,7 +8,7 @@ static Context *ev_handler(Event ev, Context *c)
 {
   switch (ev.event)
   {
-    case EVENT_YIELD:
+    case EVENT_YIELD: case EVENT_SYSCALL:
     {
       Context **from = (Context **)from_g;
       Context **to = (Context **)to_g;
